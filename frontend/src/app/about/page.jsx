@@ -8,7 +8,7 @@ const AboutPage = () => {
     console.log(img1)
     return (
     <>
-    <div className=" text-[#015109]">
+    <div className=" text-[#015109] bg-[#F5F5F5]">
       <Header />
       <div className="container mx-auto mt-10" style={{paddingTop:'100px',paddingBottom:'100px'}}>
       <div

@@ -1,12 +1,27 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { usePathname } from 'next/navigation'; // Use usePathname from next/navigation
+import { getUser, isLogined , clearAuthData} from '@/utils/helper';
 
-const Header = () => {
+
+const Header = ({  }) => {
   const currentPath = usePathname(); // Get the current path
+  
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    useEffect(() => {
+      const userData = getUser();
+      if (userData) {
+          setIsAuthenticated(true);
+      }
+  }, []);
 
   // Hide the "Log in" button on the login or signup pages
   const shouldShowLoginButton = !(currentPath === '/login' || currentPath === '/signup');
+  const handleLogout = () => {
+    clearAuthData();
+    setIsAuthenticated(false); // Update state after logging out
+  };
+  const isActive = (path) => currentPath === path;
 
   return (
     <header style={styles.header}>
@@ -16,18 +31,28 @@ const Header = () => {
         </a>
       </div>
       <nav style={styles.nav}>
-        <a href="/" style={styles.navLink}>
+        <a href="/" style={isActive('/') ? styles.activeNavLink : styles.navLink}>
           Home
         </a>
-        <a href="/about" style={styles.navLink}>
+        <a href="/about" style={isActive('/about') ? styles.activeNavLink : styles.navLink}>
           About us
         </a>
+        {isAuthenticated && (
+          <a href="/add-customer" style={isActive('/add-customer') ? styles.activeNavLink : styles.navLink}>
+            Add Customer
+          </a>
+        )}
       </nav>
       <div style={styles.loginButtonWrapper}>
-
-        {shouldShowLoginButton && (
+        {shouldShowLoginButton && !isAuthenticated && ( // Show log in button only when not authenticated
           <button style={styles.loginButton}>
-            <a href="/login"> Log in</a></button>
+            <a href="/login">Log in</a>
+          </button>
+        )}
+        {isAuthenticated && ( // Show log out button when authenticated
+          <button style={styles.loginButton} onClick={handleLogout}>
+            Log out
+          </button>
         )}
       </div>
     </header>
@@ -41,7 +66,7 @@ const styles = {
     left: 0,
     right: 0,
     display: 'flex',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between', // Evenly distribute space
     alignItems: 'center',
     padding: '10px 20px',
     borderBottom: '1px solid #FFFFFF',
@@ -49,30 +74,35 @@ const styles = {
     zIndex: 1000, // Ensure header stays on top of other content
   },
   logo: {
-    paddingLeft: '125px',
+    paddingLeft: '20px', // Adjusted padding
   },
   signCheck: {
     fontWeight: '900',
     color: '#E49F15', // Yellow color for Sign-Check
-    fontSize: '30px',
+    fontSize: '24px', // Reduced font size
     textDecoration: 'none',
   },
   nav: {
     display: 'flex',
-    gap: '250px',
-    paddingLeft: '250px',
+    gap: '50px', // Equal spacing between links
+    paddingLeft: '50px', // Adjusted padding for nav
   },
   navLink: {
-    fontWeight: 'bold',
+    fontWeight: 'normal', // Normal weight for inactive links
     color: '#5A7F58', // Green color for Home and About us
-    fontSize: '25px',
+    fontSize: '20px', // Reduced font size
+    textDecoration: 'none',
+  },
+  activeNavLink: {
+    fontWeight: '900', // Bold weight for active link
+    color: '#5A7F58', // Same color for consistency
+    fontSize: '20px', // Same size for consistency
     textDecoration: 'none',
   },
   loginButtonWrapper: {
-    flex: 1,
     display: 'flex',
-    justifyContent: 'flex-end',
-    paddingRight: '50px',
+    alignItems: 'center', // Center the login/logout button vertically
+    paddingRight: '20px', // Adjusted padding
   },
   loginButton: {
     border: '2px solid #5A7F58',
@@ -82,6 +112,7 @@ const styles = {
     color: '#5A7F58',
     fontSize: '16px',
     cursor: 'pointer',
+    marginLeft: '10px',
   },
 };
 

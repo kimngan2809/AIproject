@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { callAPI } from '@/utils/api-caller';
-import { getUser, clearAuthData } from '@/utils/helper';
+import { getUser, clearAuthData, saveUserData } from '@/utils/helper';
 import { useRouter } from 'next/navigation';
 
 const MyAccount = () => {
@@ -34,6 +34,7 @@ const MyAccount = () => {
                 username,
             };
             await callAPI(`/users/${user.id}`, 'PUT', data);
+            saveUserData(data);
             alert('Cập nhật thông tin thành công!');
         } catch (error) {
             console.error(error);
@@ -97,6 +98,10 @@ const MyAccount = () => {
             <button onClick={handleUpdate}>Update</button>
             <button onClick={handleLogout}>Log Out</button>
             <button onClick={handleDeleteAccount}>Delete Account</button>
+            <nav >
+        <a href="/" >
+          Home
+        </a></nav>
         </div>
     );
 };

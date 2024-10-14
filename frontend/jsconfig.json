@@ -1,7 +1,9 @@
 {
   "compilerOptions": {
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/*"]
-    }
+      "@/*": ["*"]
+    },
+    "lib": ["dom", "es2015"] // Thêm thư viện ES2015
   }
 }

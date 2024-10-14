@@ -1,16 +1,29 @@
 "use client";
+import React, { useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { getUser } from '@/utils/helper';
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import img1 from "@/img/Layer_1.png";
+
 
 import Image from 'next/image';
 
 
 const MainPage = () => {
   console.log(img1)
+  const router = useRouter();
+  useEffect(() => {
+    const userData = getUser();
+    
+    console.log('User Data:', userData); // Log user data for debugging
+    if (userData) {
+      router.push('/sign_check'); // Ensure this path is correct
+    }
+  }, [router]);
   return (
     <>
-    <div className=" text-[#015109]">
+    <div className=" text-[#015109] bg-[#F5F5F5]">
       <Header />
       
       <div className="container mx-auto mt-10" style={{paddingTop:'100px', display:'flex',paddingBottom:'100px'}}>

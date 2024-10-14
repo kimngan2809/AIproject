@@ -2,34 +2,38 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import img2 from "@/img/Layer_2.png";
+import { callAPI } from "@/utils/api-caller";
+import { setToken, setUser } from "@/utils/helper";
 import Image from 'next/image';
 
+
 const LoginPage = () => {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [errorText, setErrorText] = useState(false);
+  const [errorText, setErrorText] = useState("");
   const router = useRouter();
 
-  const hanldeLogin = async (email, password) => {
+  const onLoginClick = async (e) => {
+    e.preventDefault(); // Ngăn chặn hành vi mặc định của form
     try {
-      const response = await callAPI("/login", "POST", null, { email: email, password: password });
+      const data = {
+        identifier: username, // Sử dụng username
+        password: password
+      };
+      const res = await callAPI("/login", "POST", data);
+      console.log(res.data);
       
-      if (response.ok) {
-        const data = response.json();
-        console.log('Đăng nhập thành công:', data);
-        const token = data.token;
-        localStorage.setItem('token', token);
-        const user = data.token;
-        console.log(user);
-        Cookies.set('user', user, { expires: 1 });
-        router.push("/account"); // Chuyển đến trang đăng ký
+      if (res.data.token) {
+        const token = res.data.token;
+        setToken(token[1]);
+        setUser(token[0]);
+        router.replace("/account"); // Chuyển đến trang chính sau khi đăng nhập thành công
       } else {
-        console.error('Lỗi đăng nhập:', data.message);
-        setErrorText(true);
+        setErrorText("Wrong Username or Password!");
       }
     } catch (error) {
-      console.error('Lỗi khi gửi request:', error);
-      setErrorText(true);
+      setErrorText("Wrong Username or Password!");
+      console.log(error);
     }
   };
 
@@ -49,18 +53,18 @@ const LoginPage = () => {
         </div>
 
         <div className="lg:w-1/2 p-10 bg-[#F5F5F5]" style={{ width: "calc(50% + 50px)" }}>
-          <form className="space-y-3">
+          <form className="space-y-3" onSubmit={onLoginClick}> {/* Thêm onSubmit ở đây */}
             <h1 className="text-3xl font-extrabold text-[#458A55] mb-6 text-center">LOG IN</h1>
 
             <div className="space-y-0">
-              <label htmlFor="email" className="block text-sm font-semibold text-[#458A55]">User name</label>
+              <label htmlFor="username" className="block text-sm font-semibold text-[#458A55]">User name</label>
               <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Enter your Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                id="username"
+                name="username"
+                type="text"
+                placeholder="Enter your Username" // Đã đổi từ Email sang Username
+                value={username} // Sử dụng username
+                onChange={(e) => setUsername(e.target.value)} // Cập nhật username
                 required
                 className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
               />
@@ -89,12 +93,8 @@ const LoginPage = () => {
 
             <div className="text-center">
               <button
-                type="submit"
+                type="submit" // Đặt type là submit để kích hoạt onSubmit
                 className="font-medium py-2 px-8 bg-[#458A55] text-white rounded-full text-sm font-semibold hover:bg-[#3c7b4a] transition"
-                onClick={(e) => {
-                  e.preventDefault(); 
-                  hanldeLogin(email, password); // Gọi hàm khi người dùng nhấn nút
-                }}
               >
                 Sign in
               </button>
