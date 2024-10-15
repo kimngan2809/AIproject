@@ -15,12 +15,10 @@ class BaseController:
         return jsonify({"error": "Not found"}), 404
     
     def create(self, data):
-        data = request.json
         self.service.create(data)
         return jsonify({"message": "Created successfully"}), 201
     
-    def update(self, object_id):
-        data = request.json
+    def update(self, object_id, data):
         self.service.update(object_id, data)
         return jsonify({"message": "Updated successfully"}), 200
     

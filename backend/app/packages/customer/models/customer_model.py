@@ -4,7 +4,7 @@ from app.config.Database import db
 
 class CustomerModel(BaseModel):
     def __init__(self, mongo = db):
-        super().__init__(collection_name='customer', mongo=db)
+        super().__init__(collection_name='customer', mongo=mongo)
     def create(self,data):
         try:
             if super().find_one({"phoneNumber":data['phoneNumber']}):

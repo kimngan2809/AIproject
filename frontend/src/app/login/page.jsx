@@ -3,9 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import img2 from "@/img/Layer_2.png";
 import { callAPI } from "@/utils/api-caller";
-import { setToken, setUser } from "@/utils/helper";
+import { setToken, setUser, getUser } from "@/utils/helper";
 import Image from 'next/image';
-
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
@@ -18,16 +17,22 @@ const LoginPage = () => {
     try {
       const data = {
         identifier: username, // Sử dụng username
-        password: password
+        password: password,
       };
       const res = await callAPI("/login", "POST", data);
-      console.log(res.data);
       
       if (res.data.token) {
         const token = res.data.token;
-        setToken(token[1]);
-        setUser(token[0]);
-        router.replace("/account"); // Chuyển đến trang chính sau khi đăng nhập thành công
+        const user = res.data.user; // Assuming API returns the user object
+        setToken(token);
+        setUser(user); // Save user data including role
+        
+        // Redirect based on user role
+        if (user.role === "admin") {
+          router.replace("/admin/dashboard"); // Redirect to admin dashboard
+        } else {
+          router.replace("/"); 
+        }
       } else {
         setErrorText("Wrong Username or Password!");
       }
@@ -62,9 +67,9 @@ const LoginPage = () => {
                 id="username"
                 name="username"
                 type="text"
-                placeholder="Enter your Username" // Đã đổi từ Email sang Username
-                value={username} // Sử dụng username
-                onChange={(e) => setUsername(e.target.value)} // Cập nhật username
+                placeholder="Enter your Username"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
                 className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
               />

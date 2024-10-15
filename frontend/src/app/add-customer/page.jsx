@@ -13,19 +13,28 @@ const AddCustomer = () => {
   const [errorText, setErrorText] = useState("");
   const router = useRouter();
   
-  const handleAddCustomer=async(firstName,lastName,phoneNumber,customerId,image) => {
-    try{
-      const response = await callAPI("/api/addcustomer", "POST", {firstName:firstName,lastName:lastName,phoneNumber:phoneNumber,customerId:customerId,image:image});
-      if (response){
-        console.log('Add customer successly');
-        navigateToCustomerList()
-      }else{
-        console.error('Error',data.message);
+  const handleAddCustomer=async(name,phoneNumber,customerId,image) => {
+    try {
+      // Tạo FormData để bao gồm cả thông tin khách hàng và file ảnh
+      const formData = new FormData();
+      formData.append('name', name);
+      formData.append('phoneNumber', phoneNumber);
+      formData.append('customerId', customerId);
+      formData.append('image', image); // 'image' là key sẽ được backend nhận
+  
+      // Gọi API bằng FormData
+      const response = await callAPI("/add-customer", "POST", formData, null, true);
+  
+      if (response) {
+        console.log('Add customer successfully');
+        navigateToCustomerList();
+      } else {
+        console.error('Error', response.message);
         setErrorText(true);
       }
-    }catch(error){
-      console.error('Error when call server:',error);
-      setErrorText(true)
+    } catch (error) {
+      console.error('Error when calling server:', error);
+      setErrorText(true);
     }
   };
 
@@ -36,7 +45,7 @@ const AddCustomer = () => {
       return;
     }
     setErrorText("");
-    handleAddCustomer(firstName + "" + lastName,phoneNumber,customerId,image);
+    handleAddCustomer(firstName + " " + lastName,phoneNumber,customerId,image);
   };
 
   const navigateToCustomerList = () => {
