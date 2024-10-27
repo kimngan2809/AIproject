@@ -1,8 +1,8 @@
 "use client"; 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { callAPI } from '@/utils/api-caller';
-import { data } from "autoprefixer";
+import { getUser } from '@/utils/helper';
 
 const AddCustomer = () => {
   const [firstName, setFirstName] = useState("");
@@ -13,7 +13,15 @@ const AddCustomer = () => {
   const [errorText, setErrorText] = useState("");
   const router = useRouter();
   
-  const handleAddCustomer=async(name,phoneNumber,customerId,image) => {
+  useEffect(() => {
+    const userData = getUser();
+    if (!userData) {
+      // Redirect to login page if user is not authenticated
+      router.push('/login');
+    }
+  }, [router]);
+
+  const handleAddCustomer = async (name, phoneNumber, customerId, image) => {
     try {
       // Tạo FormData để bao gồm cả thông tin khách hàng và file ảnh
       const formData = new FormData();
@@ -30,11 +38,11 @@ const AddCustomer = () => {
         navigateToCustomerList();
       } else {
         console.error('Error', response.message);
-        setErrorText(true);
+        setErrorText("Error adding customer.");
       }
     } catch (error) {
       console.error('Error when calling server:', error);
-      setErrorText(true);
+      setErrorText("Server error. Please try again later.");
     }
   };
 
@@ -45,11 +53,11 @@ const AddCustomer = () => {
       return;
     }
     setErrorText("");
-    handleAddCustomer(firstName + " " + lastName,phoneNumber,customerId,image);
+    handleAddCustomer(`${firstName} ${lastName}`, phoneNumber, customerId, image);
   };
 
   const navigateToCustomerList = () => {
-    router.push("/customers");
+    router.push("/confirm");
   };
 
   const handleImageChange = (e) => {
@@ -146,12 +154,6 @@ const AddCustomer = () => {
               >
                 Add Customer
               </button>
-            </div>
-
-            <div className="text-center text-sm text-[#458A55]">
-              <span className="text-blue-600 hover:underline cursor-pointer" onClick={navigateToCustomerList}>
-                View Customer List
-              </span>
             </div>
           </form>
         </div>

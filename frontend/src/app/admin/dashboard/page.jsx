@@ -15,21 +15,36 @@ const SignCheckDashboard = () => {
     const [error, setError] = useState("");
     const router = useRouter();
 
-    // Check if user is admin
+    // Retrieve user and token
     const user = getUser();
+    const token = getToken();
+
     useEffect(() => {
         if (!user || user.role !== 'admin') {
-            // Redirect to login if not admin
             router.replace('/');
         } else {
             fetchDashboardData();
         }
-    }, [user]);
+    }, [user, token]);
 
     const fetchDashboardData = async () => {
         try {
-            const res = await callAPI('/admin/dashboard', 'GET', null, getToken());
-            setDashboardData(res.data.data);
+            const res = await callAPI('/admin/dashboard', 'GET');
+            const { data } = res.data;
+
+            // Map API data structure to match front-end expectations
+            const signatureStats = {
+                forged: data.forged_signatures || 0,
+                original: data.verified_signatures || 0,
+            };
+            const topCustomers = data.top_customer || [];
+            const totalSignaturesVerified = signatureStats.forged + signatureStats.original;
+
+            setDashboardData({
+                signatureStats,
+                topCustomers,
+                totalSignaturesVerified
+            });
         } catch (error) {
             setError("Failed to load dashboard data.");
         }
@@ -58,11 +73,11 @@ const SignCheckDashboard = () => {
     };
 
     const barData = {
-        labels: topCustomers.map(customer => customer.name),
+        labels: topCustomers.map(customer => customer._id || "Customer"), // Use customer._id or customer.name if available
         datasets: [
             {
                 label: 'Forged Signatures',
-                data: topCustomers.map(customer => customer.forgedSignatures),
+                data: topCustomers.map(customer => customer.count || 0), // Use 'count' as per your backend response
                 backgroundColor: '#688A5D',
                 borderColor: '#688A5D',
                 borderWidth: 1,
@@ -88,7 +103,9 @@ const SignCheckDashboard = () => {
             </h1>
 
             <h2 style={{ textAlign: 'center', color: '#688A5D', marginBottom: '20px' }}>Numbers of signatures verified</h2>
-            <h3 style={{ textAlign: 'center', fontSize: '48px', color: '#688A5D', marginBottom: '50px' }}>{totalSignaturesVerified}</h3>
+            <h3 style={{ textAlign: 'center', fontSize: '48px', color: '#688A5D', marginBottom: '50px' }}>
+                {totalSignaturesVerified || 0}
+            </h3>
 
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'flex-start' }}>
                 <div style={{ flex: 1, marginRight: '20px', textAlign: 'center' }}>

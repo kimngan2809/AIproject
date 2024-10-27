@@ -44,3 +44,12 @@ class StaffModel(BaseModel):
     # Hàm mới để xóa nhân viên theo ID employee
     def delete(self, employee_id):
         return super().delete({"_id": employee_id})
+    def get_all(self):
+         # Retrieve all documents from the collection
+        documents = list(self.collection.find({}))
+        
+        # Convert MongoDB documents to JSON serializable format if needed
+        for doc in documents:
+            doc['_id'] = str(doc['_id'])  # Convert ObjectId to string
+        
+        return documents

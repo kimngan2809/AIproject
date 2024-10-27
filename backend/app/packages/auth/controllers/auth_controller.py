@@ -11,6 +11,7 @@ class AuthController(BaseController):
     def login(self, data):
         token, user_data = self.service.authenticate(data)  # Trả về token và thông tin người dùng
         if token:
+            print(user_data)
             return jsonify({"message": "Login successful", "token": token, "user": user_data}), 200
         else:
             return jsonify({"error": "Authentication failed"}), 401
@@ -36,8 +37,9 @@ def isExistEmail():
 @app.route('/api/login', methods=['POST'])
 def login():
     data = request.json
+    from .password_controller import password_controller
     if data:
         if 'password' in data:
-            return auth_controller.login(data)
+            return password_controller.login(data)
     else:
         return jsonify({"error": "Missing authentication method"}), 400

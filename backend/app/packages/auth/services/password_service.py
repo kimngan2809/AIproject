@@ -16,12 +16,28 @@ class PasswordService(AuthService):
         if not hash_util.checkHash(self.model.get_authen_method(user["email"]), data["password"]):
             raise Exception('Mật khẩu không đúng')
 
-        # Tạo JWT token
-        token = jwt.encode({
+          # Create JWT token payload
+        token_payload = {
             'email': user['email'],
-            'exp': datetime.utcnow() + timedelta(hours=1)  # Thời gian hết hạn là 1 giờ
-        }, os.getenv('JWT_SECRET_KEY'), algorithm="HS256")
+            'exp': datetime.utcnow() + timedelta(hours=1)  # Expires in 1 hour
+        }
 
-        return user, token
+        # Add role to token if present
+        if 'role' in user:
+            token_payload['role'] = user['role']
 
-    
+        # Create JWT token
+        token = jwt.encode(token_payload, os.getenv('JWT_SECRET_KEY'), algorithm="HS256")
+
+        # Create user_data
+        user_data = {
+            "username": user['username']
+        }
+
+        # Add role to user_data if present
+        if 'role' in user:
+            user_data['role'] = user['role']
+
+        return token, user_data
+
+        

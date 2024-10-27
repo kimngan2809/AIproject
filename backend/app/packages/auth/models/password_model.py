@@ -7,9 +7,7 @@ class PasswordModel(AuthModel):
         super().__init__(mongo)
     
     def get_authen_method(self, email):
-        print (email)
         user = super().get_by_email(email)
-        print (user)
         if user: 
             return user["password"]
         else:

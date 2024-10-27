@@ -1,23 +1,43 @@
-export const setToken = (token)=>{
-    localStorage.setItem("token", token)
-}
-export const setUser = (user)=>{
-    localStorage.setItem("user", JSON.stringify(user));
-}
-export const getToken = ()=>{
-    return localStorage.getItem("token")
-}
-export const getUser = ()=>{
-    return localStorage.getItem("user")
-    return user ? JSON.parse(user) : null;
-}
-
-
-export const clearAuthData = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
+// Sử dụng localStorage để lưu trữ token
+export const setToken = (token) => {
+    if (typeof window !== "undefined") {
+        localStorage.setItem("token", token);
+    }
 };
 
+// Sử dụng localStorage để lưu trữ thông tin user
+export const setUser = (user) => {
+    if (typeof window !== "undefined") {
+        localStorage.setItem("user", JSON.stringify(user));
+    }
+};
+
+// Lấy token từ localStorage
+export const getToken = () => {
+    if (typeof window !== "undefined") {
+        return localStorage.getItem("token");
+    }
+    return null;
+};
+
+// Lấy thông tin user từ localStorage
+export const getUser = () => {
+    if (typeof window !== "undefined") {
+        const user = localStorage.getItem("user");
+        return user ? JSON.parse(user) : null;
+    }
+    return null;
+};
+
+// Xóa token và user từ localStorage
+export const clearAuthData = () => {
+    if (typeof window !== "undefined") {
+        localStorage.removeItem('token');
+        localStorage.removeItem('user');
+    }
+};
+
+// Giải mã JWT token
 function parseJwt(token) {
     try {
         const base64Url = token.split('.')[1];
@@ -31,10 +51,10 @@ function parseJwt(token) {
     }
 }
 
+// Kiểm tra người dùng đã đăng nhập hay chưa dựa trên token
 export const isLogined = () => {
     const token = getToken();
     if (!token) return false;
     const { exp } = parseJwt(token);
-    console.log(exp);
     return Date.now() < exp * 1000;
 };
