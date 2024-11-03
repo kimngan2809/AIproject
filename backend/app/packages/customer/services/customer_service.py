@@ -16,14 +16,14 @@ class CustomerService(BaseService):
     # Hàm để cập nhật thông tin khách hàng
     def update_customer(self, data):
         customer = self.model.get_by_id(data['id'])
+        
         if not customer:
             return {"error": "Customer not found"}, 404
 
         # Cập nhật thông tin khách hàng
         update_data = {
-            "firstname": data['firstname'],
-            "lastname": data['lastname'],
-            "phone": data['phone']
+            "name": data['name'],
+            "phoneNumber": data['phoneNumber'],
         }
 
         # Nếu có tệp chữ ký mới thì cập nhật
@@ -35,6 +35,8 @@ class CustomerService(BaseService):
 
     # Hàm để xóa khách hàng
     def delete_customer(self, customer_id):
+        print(f"Service ID Customer: {customer_id}")
+
         customer = self.model.get_by_id(customer_id)
         if not customer:
             return {"error": "Customer not found"}, 404

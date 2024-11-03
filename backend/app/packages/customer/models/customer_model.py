@@ -24,10 +24,15 @@ class CustomerModel(BaseModel):
 
     # Hàm mới để tìm khách hàng theo ID
     def get_by_id(self, customer_id):
-        customer = super().find_one({"_id": customer_id})
+        print(f"ID: {customer_id}")
+
+        customer = super().find_by_id({"_id": customer_id})
+        print(f"ID: {customer}")
+
         if customer:
             customer["_id"] = str(customer["_id"])
             return customer
+        
         return None
 
     def update(self, query, data):

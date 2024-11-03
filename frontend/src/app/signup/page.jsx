@@ -3,9 +3,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import img2 from "@/img/Layer_2.png";
 import Image from 'next/image';
-
 import { callAPI } from '@/utils/api-caller';
-
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // Import icon
 
 const SignUpPage = () => {
   const [firstName, setFirstName] = useState("");
@@ -15,6 +14,7 @@ const SignUpPage = () => {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State để hiển thị mật khẩu
   const [errorText, setErrorText] = useState("");
   const router = useRouter();
 
@@ -23,9 +23,8 @@ const SignUpPage = () => {
       const response = await callAPI("/user/signup", "POST", { name: name, email: email, idEmployee: idEmployee, phoneNumber: phoneNumber, username: username, password: password });
       
       if (response) {
-        
         console.log('Đăng kí thành công:');
-        navigateToLogin()
+        navigateToLogin();
       } else {
         console.error('Lỗi đăng kí:', data.message);
         setErrorText(true);
@@ -39,10 +38,7 @@ const SignUpPage = () => {
   const onSignUpClick = (e) => {
     e.preventDefault();
     if (!firstName || !lastName || !email || !idEmployee || !phoneNumber || !username || !password) {
-
-
       setErrorText("Have missing data!");
-
       return;
     }
     setErrorText("");
@@ -52,17 +48,19 @@ const SignUpPage = () => {
   const navigateToLogin = () => {
     router.push("/login");
   };
+
   return (
     <div className="flex min-h-screen items-center justify-center px-6 py-12 lg:px-8 bg-[#F5F5F5]">
       <div className="flex flex-col lg:flex-row w-full max-w-5xl bg-[#F5F5F5] rounded-lg overflow-hidden" style={{ height: "calc(100% + 100px)" }}>
         <div className="lg:w-1/2 flex flex-col items-center justify-center p-8 bg-[#F5F5F5] mr-10">
-        <Image src={img2} height="auto"/>
+          <Image src={img2} height="auto" />
         </div>
 
         <div className="lg:w-1/2 p-10 bg-[#F5F5F5]" style={{ width: "calc(50% + 50px)" }}>
           <form className="space-y-3" onSubmit={onSignUpClick}>
             <h1 className="text-3xl font-extrabold text-[#458A55] mb-6 text-center">SIGN UP</h1>
 
+            {/* First name and last name fields */}
             <div className="flex space-x-4 space-y-0">
               <div className="w-1/2 space-y-0">
                 <label htmlFor="firstName" className="block text-sm font-semibold text-[#458A55]">First name</label>
@@ -93,6 +91,7 @@ const SignUpPage = () => {
               </div>
             </div>
 
+            {/* Other input fields */}
             <div className="space-y-0">
               <label htmlFor="email" className="block text-sm font-semibold text-[#458A55]">Email</label>
               <input
@@ -106,7 +105,7 @@ const SignUpPage = () => {
                 className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
               />
             </div>
-              
+
             <div className="space-y-0">
               <label htmlFor="idEmployee" className="block text-sm font-semibold text-[#458A55]">ID employee</label>
               <input
@@ -120,7 +119,7 @@ const SignUpPage = () => {
                 className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
               />
             </div>
-            
+
             <div className="space-y-0">
               <label htmlFor="phoneNumber" className="block text-sm font-semibold text-[#458A55]">Phone number</label>
               <input
@@ -134,7 +133,7 @@ const SignUpPage = () => {
                 className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
               />
             </div>
-              
+
             <div className="space-y-0">
               <label htmlFor="username" className="block text-sm font-semibold text-[#458A55]">Username</label>
               <input
@@ -151,16 +150,25 @@ const SignUpPage = () => {
 
             <div className="space-y-0">
               <label htmlFor="password" className="block text-sm font-semibold text-[#458A55]">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Enter your Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"} // Đổi type dựa trên state
+                  placeholder="Enter your Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-600"
+                >
+                  {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div style={{ minHeight: "24px" }}>

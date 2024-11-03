@@ -5,33 +5,34 @@ import img2 from "@/img/Layer_2.png";
 import { callAPI } from "@/utils/api-caller";
 import { setToken, setUser, getUser } from "@/utils/helper";
 import Image from 'next/image';
+import { AiOutlineEye, AiOutlineEyeInvisible } from 'react-icons/ai'; // Import icon
 
 const LoginPage = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false); // State để hiển thị mật khẩu
   const [errorText, setErrorText] = useState("");
   const router = useRouter();
 
   const onLoginClick = async (e) => {
-    e.preventDefault(); // Ngăn chặn hành vi mặc định của form
+    e.preventDefault();
     try {
       const data = {
-        identifier: username, // Sử dụng username
+        identifier: username,
         password: password,
       };
       const res = await callAPI("/login", "POST", data);
       
       if (res.data.token) {
         const token = res.data.token;
-        const user = res.data.user; // Assuming API returns the user object
+        const user = res.data.user;
         setToken(token);
-        setUser(user); // Save user data including role
+        setUser(user);
         
-        // Redirect based on user role
         if (user.role === "admin") {
-          router.replace("/admin/dashboard"); // Redirect to admin dashboard
+          router.replace("/admin/dashboard");
         } else {
-          router.replace("/"); 
+          router.replace("/");
         }
       } else {
         setErrorText("Wrong Username or Password!");
@@ -43,11 +44,11 @@ const LoginPage = () => {
   };
 
   const navigateToSignUp = () => {
-    router.push("/signup"); // Chuyển đến trang đăng ký
+    router.push("/signup");
   };
 
   const navigateToForgotPassword = () => {
-    router.push("/forgot-password"); // Chuyển đến trang quên mật khẩu
+    router.push("/forgot-password");
   };
 
   return (
@@ -58,7 +59,7 @@ const LoginPage = () => {
         </div>
 
         <div className="lg:w-1/2 p-10 bg-[#F5F5F5]" style={{ width: "calc(50% + 50px)" }}>
-          <form className="space-y-3" onSubmit={onLoginClick}> {/* Thêm onSubmit ở đây */}
+          <form className="space-y-3" onSubmit={onLoginClick}>
             <h1 className="text-3xl font-extrabold text-[#458A55] mb-6 text-center">LOG IN</h1>
 
             <div className="space-y-0">
@@ -77,16 +78,25 @@ const LoginPage = () => {
 
             <div className="space-y-0">
               <label htmlFor="password" className="block text-sm font-semibold text-[#458A55]">Password</label>
-              <input
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Enter your Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"} // Đổi type dựa trên state
+                  placeholder="Enter your Password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  className="mt-1 block w-full px-3 py-2 bg-[#D9D9D9] border border-[#458A55] rounded-full text-sm text-[#00000080] focus:outline-none placeholder:italic"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm text-gray-600"
+                >
+                  {showPassword ? <AiOutlineEyeInvisible size={20} /> : <AiOutlineEye size={20} />}
+                </button>
+              </div>
             </div>
 
             <div className="text-right" style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -98,7 +108,7 @@ const LoginPage = () => {
 
             <div className="text-center">
               <button
-                type="submit" // Đặt type là submit để kích hoạt onSubmit
+                type="submit"
                 className="font-medium py-2 px-8 bg-[#458A55] text-white rounded-full text-sm font-semibold hover:bg-[#3c7b4a] transition"
               >
                 Sign in

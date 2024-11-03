@@ -57,7 +57,9 @@ const AddCustomer = () => {
   };
 
   const navigateToCustomerList = () => {
-    router.push("/confirm");
+    setTimeout(() => {
+      router.push("/confirm");
+    }, 2000); // Điều hướng sau 2 giây để thông báo có thời gian hiển thị
   };
 
   const handleImageChange = (e) => {

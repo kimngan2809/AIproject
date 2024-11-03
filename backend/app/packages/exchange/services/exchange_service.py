@@ -50,7 +50,7 @@ class ExchangeService(BaseService):
             top_customer = self.model.collection.aggregate([
                 {"$group": {"_id": "$customer_id", "count": {"$sum": 1}}},
                 {"$sort": {"count": -1}},
-                {"$limit": 1}
+                {"$limit": 10}
             ])
 
             result = {

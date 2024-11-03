@@ -5,7 +5,7 @@ import { getUser, clearAuthData } from "@/utils/helper";
 import Image from "next/image";
 import img4 from "@/img/Layer_4.png"; // Import the account image
 
-const Header = ({}) => {
+const Header = () => {
   const currentPath = usePathname(); // Get the current path
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
@@ -29,10 +29,7 @@ const Header = ({}) => {
 
   // Adjust isActive to make Home bold on both "/" and "/sign_check"
   const isActive = (path) => {
-    if (path === '/') {
-      return currentPath === '/' || currentPath === '/sign_check'; // Treat both as active for "Home"
-    }
-    return currentPath === path;
+    return path === '/' ? (currentPath === '/' || currentPath === '/sign_check') : currentPath === path;
   };
 
   return (
@@ -54,9 +51,14 @@ const Header = ({}) => {
             Add Customer
           </a>
         )}
+        {/* {isAuthenticated && (
+          <a href="/sign_check" style={isActive('/sign_check') ? styles.activeNavLink : styles.navLink}>
+            Sign Check
+          </a>
+        )} */}
       </nav>
       <div style={styles.loginButtonWrapper}>
-        {isAuthenticated && currentPath !== "/account" && ( // Show account icon and logout button when authenticated and not on /account
+        {isAuthenticated && currentPath !== "/account" && (
           <>
             <a href="/account" style={styles.accountIcon}>
               <Image src={img4} width={32} height={32} layout="intrinsic" alt="Account" style={styles.accountImage} />
@@ -66,7 +68,7 @@ const Header = ({}) => {
             </button>
           </>
         )}
-        {shouldShowLoginButton && !isAuthenticated && ( // Show log in button only when not authenticated
+        {shouldShowLoginButton && !isAuthenticated && (
           <button style={styles.loginButton}>
             <a href="/login">Log in</a>
           </button>
@@ -78,54 +80,54 @@ const Header = ({}) => {
 
 const styles = {
   header: {
-    position: "fixed", // Make header fixed
+    position: "fixed",
     top: 0,
     left: 0,
     right: 0,
     display: "flex",
-    justifyContent: "space-between", // Evenly distribute space
+    justifyContent: "space-between",
     alignItems: "center",
     padding: "10px 20px",
     borderBottom: "1px solid #FFFFFF",
     backgroundColor: "#FFFFFF",
-    zIndex: 1000, // Ensure header stays on top of other content
+    zIndex: 1000,
   },
   logo: {
-    paddingLeft: "20px", // Adjusted padding
+    paddingLeft: "20px",
   },
   signCheck: {
     fontWeight: "900",
-    color: "#E49F15", // Yellow color for Sign-Check
-    fontSize: "24px", // Reduced font size
+    color: "#E49F15",
+    fontSize: "24px",
     textDecoration: "none",
   },
   nav: {
     display: "flex",
-    gap: "50px", // Equal spacing between links
-    paddingLeft: "50px", // Adjusted padding for nav
+    gap: "50px",
+    paddingLeft: "50px",
   },
   navLink: {
-    fontWeight: "normal", // Normal weight for inactive links
-    color: "#5A7F58", // Green color for Home and About us
-    fontSize: "20px", // Reduced font size
+    fontWeight: "normal",
+    color: "#5A7F58",
+    fontSize: "20px",
     textDecoration: "none",
   },
   activeNavLink: {
-    fontWeight: "900", // Bold weight for active link
-    color: "#5A7F58", // Same color for consistency
-    fontSize: "20px", // Same size for consistency
+    fontWeight: "900",
+    color: "#5A7F58",
+    fontSize: "20px",
     textDecoration: "none",
   },
   loginButtonWrapper: {
     display: "flex",
-    alignItems: "center", // Center the login/logout button vertically
-    paddingRight: "20px", // Adjusted padding
+    alignItems: "center",
+    paddingRight: "20px",
   },
   accountIcon: {
-    marginRight: "10px", // Space between account icon and log out button
+    marginRight: "10px",
   },
   accountImage: {
-    borderRadius: "50%", // Circular shape
+    borderRadius: "50%",
     cursor: "pointer",
   },
   loginButton: {

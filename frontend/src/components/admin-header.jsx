@@ -56,6 +56,14 @@ const Header = ({}) => {
         >
           Sign Check
         </a>
+        <a
+          href="/admin/add-customer"
+          style={
+            isActive("/admin/add-customer") ? styles.activeNavLink : styles.navLink
+          }
+        >
+          Add Customer
+        </a>
 
       </nav>
       <div style={styles.loginButtonWrapper}>
