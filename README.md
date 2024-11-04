@@ -1,6 +1,6 @@
 AI PROJECT - APPLICATION OF HANDWRITTEN SIGNATURE AUTHENTICATION
 1. Model AI
-- This project use data from Kaggle with dataset <<https://www.kaggle.com/datasets/robinreni/signature-verification-dataset>>
+- This project use data from Kaggle with dataset <https://www.kaggle.com/datasets/robinreni/signature-verification-dataset>
 - Also we use the siamese network from a <https://www.kaggle.com/code/suraj520/siamese-network-100-acc-know-train-infer>
 - This model we trained over 6 hours and received a surpassed expectation with acc to 0.9909 for 5 epochs
 - You can see our note book <https://github.com/kimngan2809/AIproject/blob/main/siamese_network_custome.ipynb>
