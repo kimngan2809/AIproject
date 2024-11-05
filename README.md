@@ -5,7 +5,7 @@ AI PROJECT - APPLICATION OF HANDWRITTEN SIGNATURE AUTHENTICATION
 - This model we trained over 6 hours and received a surpassed expectation with acc to 0.9909 for 5 epochs
 - You can see our note book <https://github.com/kimngan2809/AIproject/blob/main/siamese_network_custome.ipynb>
 2. Document
-- We haved organized the document of this project in Google Drive. You can access through:  <https://drive.google.com/drive/folders/1rSZEAbh-4uKK3SnPtMLrqqZo4lyoDmVV?usp=drive_link>
+- We haved organized the document of this project in Google Drive. You can access through:  <[https://drive.google.com/drive/folders/1rSZEAbh-4uKK3SnPtMLrqqZo4lyoDmVV?usp=drive_link](https://drive.google.com/drive/folders/1pRssYalgO3rn2UfDVHnIisqg6tAGrg1Q?usp=drive_link)>
 3. Architecture
 - Project has backend, frontend, image, db
   + Backend built with flask and MVC architecture
